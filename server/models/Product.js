@@ -9,6 +9,13 @@ const ProductSchema = new mongoose.Schema(
       uppercase: true,
       trim: true,
     },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
     title: {
       type: String,
       required: true,
@@ -18,6 +25,11 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: ['Yeola Paithani', 'Maharani', 'Tissue Silk', 'Semi-Paithani'],
+    },
+    collection: {
+      type: String,
+      enum: ['Bridal Collection', 'Festival Collection', 'Traditional Collection', 'General Collection'],
+      default: 'General Collection',
     },
     fabric: {
       type: String,
@@ -32,7 +44,7 @@ const ProductSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
-    originalPrice: {
+    compareAtPrice: {
       type: Number,
       min: 0,
     },
@@ -51,6 +63,14 @@ const ProductSchema = new mongoose.Schema(
     inStock: {
       type: Boolean,
       default: true,
+    },
+    stockQuantity: {
+      type: Number,
+      default: 10,
+    },
+    featured: {
+      type: Boolean,
+      default: false,
     },
     colors: [
       {

@@ -1,9 +1,11 @@
 export const MOCK_PRODUCTS = [
   {
     id: 'pth-001',
+    slug: 'maharani-royal-peacock-yeola-paithani',
     sku: 'IP-YPAI-001',
     title: 'Maharani Royal Peacock Pure Yeola Paithani Saree',
     category: 'Yeola Paithani',
+    collection: 'Bridal Collection',
     fabric: 'Pure Silk',
     zariType: 'Pure Real Gold Zari (Tested)',
     price: 38500,
@@ -12,6 +14,7 @@ export const MOCK_PRODUCTS = [
     rating: 4.9,
     reviewsCount: 38,
     inStock: true,
+    stockQuantity: 5,
     colors: [
       { name: 'Royal Maroon', hex: '#4A0E17' },
       { name: 'Peacock Emerald', hex: '#0F382C' },
@@ -29,21 +32,23 @@ export const MOCK_PRODUCTS = [
       'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&q=80&w=1000',
       'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&q=80&w=1000'
     ],
-    description: 'Masterpiece handcrafted Yeola Paithani saree in deep royal maroon pure silk. Features traditional double Muniya borders and an opulent golden Zari Pallu intricately woven with peacock and lotus motifs by state award-winning weavers.',
+    description: 'Masterpiece handcrafted Yeola Paithani saree in deep royal maroon pure silk. Features traditional double Muniya borders and an opulent golden Zari Pallu intricately woven with peacock and lotus motifs by state award-winning weavers of Yeola.',
     specs: {
       'Saree Length': '6.3 Meters (With Blouse)',
       'Blouse Length': '0.80 Meters',
       'Fabric Purity': '100% Pure Mulberry Silk (Silk Mark Certified)',
-      'Weave Technique': 'Handloom Interlock Weave',
-      'Pallu Style': 'Rich Peacock & Asawali Zari Motif',
+      'Weave Technique': 'Handloom Interlock Tapestry Weave',
+      'Pallu Style': 'Rich Peacock & Asawali Gold Zari Motif',
       'Origin': 'Yeola, Nashik (Maharashtra, India)'
     }
   },
   {
     id: 'pth-002',
+    slug: 'emerald-golden-brocade-tissue-silk-paithani',
     sku: 'IP-TSUK-002',
     title: 'Emerald Golden Brocade Tissue Silk Paithani',
     category: 'Tissue Silk',
+    collection: 'Festival Collection',
     fabric: 'Tissue Silk',
     zariType: 'Fine Tested Metallic Zari',
     price: 26800,
@@ -52,6 +57,7 @@ export const MOCK_PRODUCTS = [
     rating: 4.8,
     reviewsCount: 24,
     inStock: true,
+    stockQuantity: 3,
     colors: [
       { name: 'Emerald Green', hex: '#0F382C' },
       { name: 'Ruby Magenta', hex: '#900C3F' }
@@ -79,9 +85,11 @@ export const MOCK_PRODUCTS = [
   },
   {
     id: 'pth-003',
+    slug: 'maharani-handwoven-mulberry-silk-bridal-paithani',
     sku: 'IP-MHRN-003',
     title: 'Maharani Handwoven Mulberry Silk Bridal Paithani',
     category: 'Maharani',
+    collection: 'Bridal Collection',
     fabric: 'Pure Silk',
     zariType: 'Pure Silver Zari with Gold Plating',
     price: 54000,
@@ -90,6 +98,7 @@ export const MOCK_PRODUCTS = [
     rating: 5.0,
     reviewsCount: 19,
     inStock: true,
+    stockQuantity: 2,
     colors: [
       { name: 'Crimson Red', hex: '#800020' },
       { name: 'Royal Gold', hex: '#D4AF37' }
@@ -117,9 +126,11 @@ export const MOCK_PRODUCTS = [
   },
   {
     id: 'pth-004',
+    slug: 'soft-semi-paithani-festive-art-silk-saree',
     sku: 'IP-SEMI-004',
     title: 'Soft Semi-Paithani Festive Art Silk Saree',
     category: 'Semi-Paithani',
+    collection: 'Traditional Collection',
     fabric: 'Semi-Paithani',
     zariType: 'Light Zari Thread Work',
     price: 12500,
@@ -128,6 +139,7 @@ export const MOCK_PRODUCTS = [
     rating: 4.6,
     reviewsCount: 42,
     inStock: true,
+    stockQuantity: 8,
     colors: [
       { name: 'Pastel Yellow', hex: '#F4E091' },
       { name: 'Royal Blue', hex: '#1E3A8A' }
@@ -140,7 +152,8 @@ export const MOCK_PRODUCTS = [
     handloomCertified: false,
     silkMarkCertified: false,
     images: [
-      'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&q=80&w=1000'
+      'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&q=80&w=1000',
+      'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&q=80&w=1000'
     ],
     description: 'Lightweight, easy-to-drape Semi-Paithani option for poojas, festive gatherings, and daytime family celebrations.',
     specs: {
@@ -151,6 +164,39 @@ export const MOCK_PRODUCTS = [
       'Pallu Style': 'Peacock Motif Pallu',
       'Origin': 'Nashik, Maharashtra'
     }
+  }
+];
+
+export const MOCK_REVIEWS = [
+  {
+    id: 'rev-1',
+    author: 'Sunita Deshmukh',
+    city: 'Pune',
+    rating: 5,
+    date: '2026-08-14',
+    verifiedPurchase: true,
+    sareeName: 'Maharani Royal Peacock Pure Yeola Paithani Saree',
+    comment: 'The quality of silk and gold zari is unbelievable! Pure Yeola handloom quality. It was the star attraction at my daughter’s wedding.'
+  },
+  {
+    id: 'rev-2',
+    author: 'Pooja Kulkarni',
+    city: 'Mumbai',
+    rating: 5,
+    date: '2026-09-02',
+    verifiedPurchase: true,
+    sareeName: 'Emerald Golden Brocade Tissue Silk Paithani',
+    comment: 'Direct shipping from Yeola hub within 3 days. Silk Mark tag attached. Absolutely authentic traditional craftsmanship.'
+  },
+  {
+    id: 'rev-3',
+    author: 'Ananya Joshi',
+    city: 'Nashik',
+    rating: 5,
+    date: '2026-09-11',
+    verifiedPurchase: true,
+    sareeName: 'Maharani Handwoven Mulberry Silk Bridal Paithani',
+    comment: 'Niharika Wade and her team provided exceptional guidance on WhatsApp. Delivered safely with muslin saree bag. Worth every rupee!'
   }
 ];
 
@@ -185,37 +231,6 @@ export const MOCK_ORDERS = [
       pincode: '411004',
       label: 'Home'
     }
-  },
-  {
-    id: 'ORD-2026-7812',
-    date: '2026-09-10',
-    totalAmount: 26800,
-    paymentMethod: 'Cash on Delivery',
-    status: 'Shipped',
-    trackingNumber: 'IND-EXPR-4451902',
-    courier: 'Delhivery Surface',
-    trackingUrl: 'https://www.delhivery.com/track/package/IND-EXPR-4451902',
-    items: [
-      {
-        id: 'pth-002',
-        title: 'Emerald Golden Brocade Tissue Silk Paithani',
-        color: 'Emerald Green',
-        price: 26800,
-        quantity: 1,
-        image: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&q=80&w=300'
-      }
-    ],
-    shippingAddress: {
-      name: 'Indrani Sharma',
-      phone: '+91 9823456789',
-      flat: 'Plot No 88, Sunrise Heights',
-      street: 'Baner-Pashan Link Road',
-      landmark: 'Opposite Dominoes',
-      city: 'Pune',
-      state: 'Maharashtra',
-      pincode: '411045',
-      label: 'Work'
-    }
   }
 ];
 
@@ -225,9 +240,5 @@ export const PINCODE_DATABASE = {
   '422001': { city: 'Nashik', state: 'Maharashtra', serviceable: true, estDays: '1-2 Business Days (Local Express)' },
   '423401': { city: 'Yeola', state: 'Maharashtra', serviceable: true, estDays: '1 Business Day (Hub Same-Day)' },
   '110001': { city: 'New Delhi', state: 'Delhi', serviceable: true, estDays: '3-4 Business Days' },
-  '560001': { city: 'Bengaluru', state: 'Karnataka', serviceable: true, estDays: '3-4 Business Days' },
-  '600001': { city: 'Chennai', state: 'Tamil Nadu', serviceable: true, estDays: '4-5 Business Days' },
-  '700001': { city: 'Kolkata', state: 'West Bengal', serviceable: true, estDays: '4-5 Business Days' },
-  '500001': { city: 'Hyderabad', state: 'Telangana', serviceable: true, estDays: '3-4 Business Days' },
-  '380001': { city: 'Ahmedabad', state: 'Gujarat', serviceable: true, estDays: '3-4 Business Days' }
+  '560001': { city: 'Bengaluru', state: 'Karnataka', serviceable: true, estDays: '3-4 Business Days' }
 };

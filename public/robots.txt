@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /profile
+Disallow: /checkout
+Disallow: /login
+Disallow: /register
+
+Sitemap: https://indrani-paithani-web.onrender.com/sitemap.xml
