@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowRight, ShieldCheck, Award, Truck, Heart, Star, ShoppingBag } from 'lucide-react';
+import { Sparkles, ArrowRight, Award, Heart, Star, ShoppingBag, Quote, ShieldCheck } from 'lucide-react';
 import { MOCK_PRODUCTS } from '../data/mockData';
 import { useCart } from '../context/CartContext';
 
@@ -72,8 +72,6 @@ export const Home = () => {
 
             {/* RIGHT: FLOATING PAITHANI SAREE HERO ANIMATION (5 cols) */}
             <div className="lg:col-span-5 flex justify-center relative">
-              
-              {/* Animated Floating Saree Card Container */}
               <motion.div
                 animate={{
                   y: [0, -16, 0],
@@ -93,7 +91,6 @@ export const Home = () => {
                     className="w-full h-[450px] object-cover"
                   />
                   
-                  {/* Overlay Golden Floating Badge */}
                   <div className="absolute bottom-4 left-4 right-4 bg-brand-maroon/90 backdrop-blur-md p-4 rounded-xl border border-brand-gold/60 text-white shadow-lg">
                     <div className="flex justify-between items-center">
                       <div>
@@ -105,7 +102,6 @@ export const Home = () => {
                   </div>
                 </div>
 
-                {/* Floating Zari Sparkle Badge */}
                 <motion.div
                   animate={{ scale: [1, 1.1, 1] }}
                   transition={{ duration: 3, repeat: Infinity }}
@@ -113,9 +109,7 @@ export const Home = () => {
                 >
                   <Award className="w-4 h-4" /> Real Gold Zari Woven
                 </motion.div>
-
               </motion.div>
-
             </div>
 
           </div>
@@ -204,6 +198,66 @@ export const Home = () => {
           >
             View Entire Royal Collection <ArrowRight className="w-4 h-4" />
           </Link>
+        </div>
+      </section>
+
+      {/* ABOUT THE FOUNDER SECTION */}
+      <section className="py-16 bg-white border-t border-b border-amber-200/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-brand-cream rounded-3xl p-8 lg:p-12 border border-amber-200 shadow-luxury">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+              
+              {/* Founder Image (5 cols) */}
+              <div className="lg:col-span-5 flex justify-center">
+                <div className="relative">
+                  <div className="w-64 sm:w-80 h-80 sm:h-[420px] rounded-2xl overflow-hidden border-4 border-brand-gold shadow-2xl">
+                    <img
+                      src="/founder.png"
+                      alt="Niharika Wade - Founder & CEO of Indrani Paithani"
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                  <div className="absolute -bottom-4 -right-4 bg-brand-maroon text-brand-gold p-4 rounded-2xl shadow-xl border border-brand-gold">
+                    <span className="font-serif font-bold text-lg block">64+ Years</span>
+                    <span className="text-[10px] uppercase tracking-wider text-white">Woven Heritage</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Founder Bio & Legacy Quote (7 cols) */}
+              <div className="lg:col-span-7 space-y-6">
+                <div>
+                  <span className="text-xs font-bold text-brand-gold uppercase tracking-widest bg-brand-maroon px-3.5 py-1 rounded-full">
+                    About The Founder
+                  </span>
+                  <h2 className="font-serif text-3xl sm:text-4xl font-bold text-brand-maroon mt-3">
+                    Niharika Wade
+                  </h2>
+                  <p className="text-xs font-bold text-amber-800 uppercase tracking-wider mt-1">
+                    Founder & CEO, Indrani Paithani
+                  </p>
+                </div>
+
+                <div className="relative pl-6 border-l-4 border-brand-gold space-y-4">
+                  <Quote className="w-8 h-8 text-brand-gold/40 absolute -top-2 left-0 -translate-x-1/2" />
+                  <p className="font-serif text-base sm:text-lg italic text-gray-800 leading-relaxed">
+                    "Luxury begins with trust. At Indrani Paithani, we are dedicated to preserving and celebrating the timeless heritage of Paithani craftsmanship, proudly carrying forward a legacy that has been cherished for over 64 years. Every creation reflects authenticity, elegance, and uncompromising quality."
+                  </p>
+                  <p className="text-xs text-gray-700 leading-relaxed">
+                    "Our commitment extends beyond beautiful sarees. We strive to build lasting relationships founded on customer satisfaction, transparency, and unwavering trust. These values remain at the heart of everything we do, ensuring that every patron experiences the true essence of heritage and luxury."
+                  </p>
+                </div>
+
+                <div className="pt-2 flex items-center gap-3">
+                  <ShieldCheck className="w-5 h-5 text-emerald-700 shrink-0" />
+                  <span className="text-xs font-semibold text-gray-800">
+                    Handcrafted Authenticity & Unwavering Trust Guaranteed
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
       </section>
 
