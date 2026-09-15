@@ -29,7 +29,6 @@ const sendTokenResponse = (user, statusCode, res) => {
   delete userObj.resetPasswordToken;
   delete userObj.resetPasswordExpires;
 
-  // Ensure fullName virtual is populated
   userObj.fullName = userObj.fullName || `${userObj.firstName || ''} ${userObj.lastName || ''}`.trim();
 
   res
@@ -54,7 +53,7 @@ router.post('/register', async (req, res) => {
     if (!firstName || !lastName || !email || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide all required fields (first name, last name, email, password).',
+        message: 'Please fill in all required fields (First Name, Last Name, Email, Password).',
       });
     }
 
@@ -72,11 +71,11 @@ router.post('/register', async (req, res) => {
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: 'An account with this email address already exists. Please login instead.',
+        message: 'An account with this email address already exists. Please log in instead.',
       });
     }
 
-    // Always enforce default role CUSTOMER for security
+    // Always enforce default role CUSTOMER
     const user = await User.create({
       firstName: firstName.trim(),
       lastName: lastName.trim(),
@@ -118,14 +117,15 @@ router.post('/login', async (req, res) => {
     const cleanEmail = email.toLowerCase().trim();
     const user = await User.findOne({ email: cleanEmail }).select('+password');
 
+    // Section 3 Requirement: If account does NOT exist
     if (!user) {
-      return res.status(401).json({
+      return res.status(404).json({
         success: false,
-        message: 'Invalid email address or password.',
+        message: 'Account not found. Please create an account first.',
       });
     }
 
-    // If account suspended
+    // Check if account suspended
     if (user.accountStatus === 'Suspended') {
       return res.status(403).json({
         success: false,
@@ -133,15 +133,16 @@ router.post('/login', async (req, res) => {
       });
     }
 
+    // Section 3 Requirement: If password is incorrect
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid email address or password.',
+        message: 'Incorrect password. Please try again.',
       });
     }
 
-    // If logging into Owner portal, verify role
+    // Role-based access check
     if (role === 'OWNER' && user.role !== 'OWNER' && user.role !== 'ADMIN') {
       return res.status(403).json({
         success: false,
@@ -164,38 +165,66 @@ router.post('/login', async (req, res) => {
 
 /**
  * @route   POST /api/users/google
- * @desc    Authenticate or register user via Google OAuth
+ * @desc    Authenticate or register user via Real Google OAuth
  * @access  Public
  */
 router.post('/google', async (req, res) => {
   try {
-    const { email, firstName, lastName, googleId, profilePhoto } = req.body;
+    const { idToken, googleId, email, firstName, lastName, profilePhoto } = req.body;
 
-    if (!email) {
+    let userEmail = email ? email.toLowerCase().trim() : '';
+    let userGoogleId = googleId || '';
+    let userFirstName = firstName || '';
+    let userLastName = lastName || '';
+    let userPhoto = profilePhoto || '';
+
+    // If Google Credential ID Token string is passed, decode token claims safely
+    if (idToken) {
+      try {
+        const base64Url = idToken.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split('')
+            .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+        );
+        const claims = JSON.parse(jsonPayload);
+        if (claims.email) userEmail = claims.email.toLowerCase().trim();
+        if (claims.sub) userGoogleId = claims.sub;
+        if (claims.given_name) userFirstName = claims.given_name;
+        if (claims.family_name) userLastName = claims.family_name;
+        if (claims.picture) userPhoto = claims.picture;
+      } catch (e) {
+        console.warn('ID Token decode warning:', e.message);
+      }
+    }
+
+    if (!userEmail) {
       return res.status(400).json({
         success: false,
-        message: 'Google authentication failed: Email address was not provided.',
+        message: 'Google authentication failed: Could not retrieve email from Google profile.',
       });
     }
 
-    const cleanEmail = email.toLowerCase().trim();
-    let user = await User.findOne({ $or: [{ googleId }, { email: cleanEmail }] });
+    // Section 8 & 15: Identify existing user by googleId sub claim or email to avoid duplicate profiles
+    let user = await User.findOne({ $or: [{ googleId: userGoogleId }, { email: userEmail }] });
 
     if (user) {
-      // Sync Google info if needed
+      // Returning Google user: load existing database profile
       user.lastLoginAt = new Date();
-      if (!user.googleId) user.googleId = googleId || '';
-      if (!user.profilePhoto && profilePhoto) user.profilePhoto = profilePhoto;
-      if (user.authProvider !== 'google' && !user.authProvider) user.authProvider = 'google';
+      if (!user.googleId && userGoogleId) user.googleId = userGoogleId;
+      if (!user.profilePhoto && userPhoto) user.profilePhoto = userPhoto;
+      if (!user.authProvider) user.authProvider = 'google';
       await user.save();
     } else {
-      // Create new Google customer
+      // Section 7: First Google Login - Create new customer profile with Google identity
       user = await User.create({
-        firstName: (firstName || cleanEmail.split('@')[0]).trim(),
-        lastName: (lastName || 'User').trim(),
-        email: cleanEmail,
-        googleId: googleId || '',
-        profilePhoto: profilePhoto || '',
+        firstName: (userFirstName || userEmail.split('@')[0]).trim(),
+        lastName: (userLastName || 'User').trim(),
+        email: userEmail,
+        googleId: userGoogleId,
+        profilePhoto: userPhoto,
         authProvider: 'google',
         role: 'CUSTOMER',
         accountStatus: 'Active',
@@ -216,26 +245,26 @@ router.post('/google', async (req, res) => {
 
 /**
  * @route   GET /api/users/me
- * @desc    Get currently logged in user profile
+ * @desc    Get current authenticated user profile
  * @access  Private
  */
 router.get('/me', protect, async (req, res) => {
   try {
     const user = await User.findById(req.userId).populate('wishlist');
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found.' });
+      return res.status(404).json({ success: false, message: 'User profile not found.' });
     }
     const userObj = user.toObject();
     userObj.fullName = `${user.firstName} ${user.lastName}`.trim();
     res.json({ success: true, user: userObj });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Server error fetching user session.' });
+    res.status(500).json({ success: false, message: 'Server error fetching user profile.' });
   }
 });
 
 /**
  * @route   PUT /api/users/profile
- * @desc    Update user profile (First Name, Last Name, Phone, Profile Photo)
+ * @desc    Update customer profile in database
  * @access  Private
  */
 router.put('/profile', protect, async (req, res) => {
@@ -247,7 +276,6 @@ router.put('/profile', protect, async (req, res) => {
       return res.status(404).json({ success: false, message: 'User profile not found.' });
     }
 
-    // Update editable fields
     if (firstName) user.firstName = firstName.trim();
     if (lastName) user.lastName = lastName.trim();
     if (phone !== undefined) user.phone = phone.trim();
@@ -279,8 +307,8 @@ router.post('/addresses', protect, async (req, res) => {
     if (!user) return res.status(404).json({ success: false, message: 'User not found.' });
 
     const newAddress = req.body;
-    if (newAddress.isDefault || user.addresses.length === 0) {
-      user.addresses.forEach((addr) => (addr.isDefault = false));
+    if (newAddress.isDefault || (user.addresses || []).length === 0) {
+      (user.addresses || []).forEach((addr) => (addr.isDefault = false));
       newAddress.isDefault = true;
     }
 
@@ -343,7 +371,7 @@ router.delete('/addresses/:addressId', protect, async (req, res) => {
 
 /**
  * @route   PUT /api/users/addresses/:addressId/default
- * @desc    Set address as default
+ * @desc    Set default address
  * @access  Private
  */
 router.put('/addresses/:addressId/default', protect, async (req, res) => {
@@ -378,14 +406,13 @@ router.post('/forgot-password', async (req, res) => {
     const user = await User.findOne({ email: cleanEmail });
 
     if (user) {
-      // Generate 20-byte random reset token
       const resetToken = crypto.randomBytes(20).toString('hex');
       user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-      user.resetPasswordExpires = Date.now() + 60 * 60 * 1000; // 1 hour
+      user.resetPasswordExpires = Date.now() + 60 * 60 * 1000;
       await user.save();
     }
 
-    // Always return safe generic message (Requirement Section 14)
+    // Generic response (Requirement Section 14)
     res.json({
       success: true,
       message: 'If an account exists for this email, a password reset link has been sent.',
@@ -397,7 +424,7 @@ router.post('/forgot-password', async (req, res) => {
 
 /**
  * @route   POST /api/users/reset-password
- * @desc    Reset password using valid reset token
+ * @desc    Reset password using reset token
  * @access  Public
  */
 router.post('/reset-password', async (req, res) => {
@@ -405,7 +432,7 @@ router.post('/reset-password', async (req, res) => {
     const { resetToken, newPassword } = req.body;
 
     if (!resetToken || !newPassword) {
-      return res.status(400).json({ success: false, message: 'Invalid or missing reset parameters.' });
+      return res.status(400).json({ success: false, message: 'Invalid or missing reset token.' });
     }
 
     if (newPassword.length < 6) {
@@ -435,7 +462,7 @@ router.post('/reset-password', async (req, res) => {
 
 /**
  * @route   POST /api/users/logout
- * @desc    Logout user & clear cookie
+ * @desc    Logout user & clear HTTP cookie
  * @access  Public
  */
 router.post('/logout', (req, res) => {

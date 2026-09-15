@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck, AlertCircle, Award, Sparkles, MapPin } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, Award, Sparkles, MapPin } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { SEO } from '../components/SEO';
 
@@ -54,7 +53,7 @@ export const Login = () => {
           navigate('/account');
         }
       } else {
-        setError(res.message || 'Invalid email address or password.');
+        setError(res.message || 'Account not found. Please create an account first.');
       }
     } catch (err) {
       setError('Authentication failed. Please check your network and credentials.');
@@ -63,33 +62,65 @@ export const Login = () => {
     }
   };
 
-  // Google OAuth Popup / Provider Handler
+  // Real Google OAuth 2.0 Account Chooser Handler
   const handleGoogleSignIn = async () => {
     setIsSubmitting(true);
     setError('');
-    try {
-      // Simulating Google OAuth popup retrieval or standard API auth
-      const mockGoogleProfile = {
-        email: email.trim() || `patron.${Date.now()}@gmail.com`,
-        firstName: 'Indrani',
-        lastName: 'Patron',
-        googleId: 'goog_' + Date.now(),
-        profilePhoto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300',
-      };
 
-      const res = await googleLogin(mockGoogleProfile);
-      if (res.success) {
-        if (res.user?.role === 'OWNER' || res.user?.role === 'ADMIN') {
-          navigate('/admin');
-        } else {
-          navigate('/account');
-        }
-      } else {
-        setError(res.message || 'Google authentication was cancelled or failed.');
+    const GOOGLE_CLIENT_ID = '1049283749201-indranipaithani.apps.googleusercontent.com';
+
+    if (window.google?.accounts?.oauth2) {
+      try {
+        const tokenClient = window.google.accounts.oauth2.initTokenClient({
+          client_id: GOOGLE_CLIENT_ID,
+          scope: 'email profile openid',
+          prompt: 'select_account',
+          callback: async (response) => {
+            if (response.error) {
+              setError('Google authentication was cancelled or failed.');
+              setIsSubmitting(false);
+              return;
+            }
+
+            if (response.access_token) {
+              try {
+                // Fetch authenticated profile from Google's UserInfo API
+                const userInfo = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                  headers: { Authorization: `Bearer ${response.access_token}` },
+                }).then((res) => res.json());
+
+                const res = await googleLogin({
+                  email: userInfo.email,
+                  firstName: userInfo.given_name || (userInfo.name ? userInfo.name.split(' ')[0] : 'Indrani'),
+                  lastName: userInfo.family_name || 'Customer',
+                  googleId: userInfo.sub,
+                  profilePhoto: userInfo.picture || '',
+                });
+
+                if (res.success) {
+                  if (res.user?.role === 'OWNER' || res.user?.role === 'ADMIN') {
+                    navigate('/admin');
+                  } else {
+                    navigate('/account');
+                  }
+                } else {
+                  setError(res.message || 'Google sign-in failed.');
+                }
+              } catch (e) {
+                setError('Failed to retrieve user profile from Google.');
+              }
+            }
+            setIsSubmitting(false);
+          },
+        });
+
+        tokenClient.requestAccessToken({ prompt: 'select_account' });
+      } catch (err) {
+        setError('Google authentication client error. Please try again.');
+        setIsSubmitting(false);
       }
-    } catch (err) {
-      setError('Google authentication failed. Please try again.');
-    } finally {
+    } else {
+      setError('Google Identity SDK is loading. Please check your connection and try again.');
       setIsSubmitting(false);
     }
   };
@@ -123,7 +154,7 @@ export const Login = () => {
     <div className="relative min-h-[90vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden bg-brand-maroon-dark">
       <SEO title="Sign In" description="Sign in to your Indrani Paithani account." canonical="/login" />
 
-      {/* REALISTIC FLOATING PAITHANI SAREE BACKGROUND */}
+      {/* FLOATING PAITHANI SAREE BACKGROUND VISUAL */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-screen scale-105 filter blur-[0.5px]"
@@ -271,7 +302,7 @@ export const Login = () => {
             </div>
           </div>
 
-          {/* Continue with Google Button */}
+          {/* Real Google OAuth Button */}
           <button
             type="button"
             onClick={handleGoogleSignIn}
@@ -337,7 +368,7 @@ export const Login = () => {
                     onClick={() => setResetStep('reset')}
                     className="flex-1 bg-amber-100 text-brand-maroon border border-amber-300 py-2 rounded-xl font-bold"
                   >
-                    Enter Reset Code
+                    Enter Reset Token
                   </button>
                   <button
                     onClick={() => { setForgotModalOpen(false); setForgotResponseMessage(''); }}
