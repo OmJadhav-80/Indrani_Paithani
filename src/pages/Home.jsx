@@ -217,10 +217,6 @@ export const Home = () => {
                       className="w-full h-full object-cover object-top"
                     />
                   </div>
-                  <div className="absolute -bottom-4 -right-4 bg-brand-maroon text-brand-gold p-4 rounded-2xl shadow-xl border border-brand-gold">
-                    <span className="font-serif font-bold text-lg block">64+ Years</span>
-                    <span className="text-[10px] uppercase tracking-wider text-white">Woven Heritage</span>
-                  </div>
                 </div>
               </div>
 
