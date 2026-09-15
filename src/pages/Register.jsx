@@ -112,7 +112,7 @@ export const Register = () => {
       <div className="relative z-10 max-w-lg w-full bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-amber-200/80 p-8 sm:p-10 space-y-6">
         
         <div className="text-center">
-          <img src="/logo.svg" alt="Indrani Paithani Logo" className="w-12 h-12 mx-auto mb-2" />
+          <img src="/indrani-official-logo.jpg" alt="Official Indrani Paithani Logo" className="w-16 h-16 rounded-full object-cover border-2 border-amber-400/80 shadow-md mx-auto mb-3" />
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-brand-maroon">
             Create Your Account
           </h1>

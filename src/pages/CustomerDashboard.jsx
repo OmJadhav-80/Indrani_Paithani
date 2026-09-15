@@ -161,13 +161,7 @@ export const CustomerDashboard = () => {
         {/* Profile Welcome Banner */}
         <div className="bg-brand-maroon text-white rounded-3xl p-6 sm:p-8 shadow-luxury border border-brand-gold/40 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4 text-center sm:text-left">
-            <div className="w-16 h-16 rounded-full bg-brand-gold text-brand-maroon flex items-center justify-center font-serif font-bold text-2xl border-2 border-white shadow-md">
-              {user.profilePhoto ? (
-                <img src={user.profilePhoto} alt={user.firstName} className="w-full h-full rounded-full object-cover" />
-              ) : (
-                user.firstName[0]
-              )}
-            </div>
+            <img src="/indrani-official-logo.jpg" alt="Official Indrani Paithani Logo" className="w-16 h-16 rounded-full object-cover border-2 border-amber-400/80 shadow-md shrink-0" />
             <div>
               <span className="text-[10px] font-bold uppercase tracking-widest text-brand-gold bg-brand-gold/20 px-2.5 py-0.5 rounded-full">
                 Privilege Customer Account

@@ -5,7 +5,7 @@ export const SEO = ({
   title, 
   description, 
   canonical, 
-  ogImage = `${SITE_CONFIG.domain}/logo.svg`,
+  ogImage = `${SITE_CONFIG.domain}/indrani-official-logo.jpg`,
   type = 'website',
   productData = null
 }) => {

@@ -40,9 +40,9 @@ export const Navbar = () => {
           {/* Brand Logo & Title */}
           <Link to="/" className="flex items-center gap-3 group">
             <img 
-              src="/logo.svg" 
-              alt="Indrani Paithani Logo" 
-              className="w-11 h-11 transition-transform duration-300 group-hover:scale-105 drop-shadow" 
+              src="/indrani-official-logo.jpg" 
+              alt="Official Indrani Paithani Logo" 
+              className="w-12 h-12 rounded-full object-cover border-2 border-amber-400/80 transition-transform duration-300 group-hover:scale-105 shadow-md" 
             />
             <div className="flex flex-col">
               <span className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-brand-maroon leading-none">

@@ -130,14 +130,17 @@ export const AdminDashboard = () => {
         
         {/* Header */}
         <div className="bg-brand-maroon-dark text-white p-6 sm:p-8 rounded-3xl border border-brand-gold/40 shadow-luxury flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-brand-gold bg-brand-gold/20 px-3 py-0.5 rounded-full border border-brand-gold/30">
-              Boutique Owner Portal
-            </span>
-            <h1 className="font-serif text-2xl sm:text-3xl font-bold text-brand-gold mt-1">
-              Indrani Paithani Owner Dashboard
-            </h1>
-            <p className="text-xs text-amber-200/80">Manage your boutique, products, customers and order fulfillment.</p>
+          <div className="flex items-center gap-4">
+            <img src="/indrani-official-logo.jpg" alt="Official Indrani Paithani Logo" className="w-14 h-14 rounded-full object-cover border-2 border-amber-400/80 shadow-md shrink-0" />
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-brand-gold bg-brand-gold/20 px-3 py-0.5 rounded-full border border-brand-gold/30">
+                Boutique Owner Portal
+              </span>
+              <h1 className="font-serif text-2xl sm:text-3xl font-bold text-brand-gold mt-1">
+                Indrani Paithani Owner Dashboard
+              </h1>
+              <p className="text-xs text-amber-200/80">Manage your boutique, products, customers and order fulfillment.</p>
+            </div>
           </div>
 
           <button

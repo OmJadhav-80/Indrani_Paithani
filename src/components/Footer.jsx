@@ -50,7 +50,7 @@ export const Footer = () => {
         {/* Brand Story */}
         <div className="space-y-4">
           <div className="flex items-center gap-3">
-            <img src="/logo.svg" alt="Indrani Paithani Logo" className="w-10 h-10" />
+            <img src="/indrani-official-logo.jpg" alt="Official Indrani Paithani Logo" className="w-12 h-12 rounded-full object-cover border-2 border-amber-400/80 shadow-md" />
             <span className="font-serif text-2xl font-bold tracking-tight text-white">
               INDRANI <span className="text-brand-gold">PAITHANI</span>
             </span>

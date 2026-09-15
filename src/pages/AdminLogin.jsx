@@ -49,7 +49,7 @@ export const AdminLogin = () => {
       <div className="max-w-md w-full space-y-6">
         
         <div className="text-center">
-          <img src="/logo.svg" alt="Indrani Paithani" className="w-16 h-16 mx-auto mb-3 drop-shadow" />
+          <img src="/indrani-official-logo.jpg" alt="Official Indrani Paithani Logo" className="w-20 h-20 rounded-full object-cover border-2 border-amber-400/80 shadow-luxury mx-auto mb-3" />
           <h1 className="font-serif text-3xl font-bold text-brand-gold">
             Indrani Paithani – Owner Portal
           </h1>
