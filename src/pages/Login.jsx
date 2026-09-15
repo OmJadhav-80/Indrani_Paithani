@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, Award, Sparkles, MapPin } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, Award, Sparkles, MapPin, Settings, X, ExternalLink } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { SEO } from '../components/SEO';
 
@@ -15,17 +15,24 @@ export const Login = () => {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
+  // Google OAuth Config State
+  const [googleClientId, setGoogleClientId] = useState(() => {
+    return localStorage.getItem('indrani_google_client_id') || import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+  });
+  const [googleConfigModalOpen, setGoogleConfigModalOpen] = useState(false);
+  const [inputClientId, setInputClientId] = useState(googleClientId);
+
   // Forgot & Reset Password Modal States
   const [forgotModalOpen, setForgotModalOpen] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [forgotResponseMessage, setForgotResponseMessage] = useState('');
-  const [resetStep, setResetStep] = useState('request'); // 'request' | 'reset'
+  const [resetStep, setResetStep] = useState('request');
   const [resetToken, setResetToken] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [resetSuccessMessage, setResetSuccessMessage] = useState('');
 
   // Redirect if already authenticated
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       if (user.role === 'OWNER' || user.role === 'ADMIN') {
         navigate('/admin');
@@ -62,49 +69,65 @@ export const Login = () => {
     }
   };
 
-  // Real Google OAuth 2.0 Account Chooser Handler
+  // Real Google OAuth Account Chooser Handler
   const handleGoogleSignIn = async () => {
-    setIsSubmitting(true);
     setError('');
+    
+    const activeClientId = googleClientId || localStorage.getItem('indrani_google_client_id') || import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-    const GOOGLE_CLIENT_ID = '1049283749201-indranipaithani.apps.googleusercontent.com';
+    if (!activeClientId) {
+      // Prompt user to enter their Google Cloud Console Client ID
+      setInputClientId('');
+      setGoogleConfigModalOpen(true);
+      return;
+    }
+
+    setIsSubmitting(true);
 
     if (window.google?.accounts?.oauth2) {
       try {
         const tokenClient = window.google.accounts.oauth2.initTokenClient({
-          client_id: GOOGLE_CLIENT_ID,
+          client_id: activeClientId,
           scope: 'email profile openid',
           prompt: 'select_account',
           callback: async (response) => {
             if (response.error) {
-              setError('Google authentication was cancelled or failed.');
+              if (response.error === 'invalid_client') {
+                setError('Error 401: invalid_client — The configured Google Client ID was not found in Google Cloud Console.');
+                setGoogleConfigModalOpen(true);
+              } else {
+                setError('Google authentication was cancelled or failed.');
+              }
               setIsSubmitting(false);
               return;
             }
 
             if (response.access_token) {
               try {
-                // Fetch authenticated profile from Google's UserInfo API
                 const userInfo = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
                   headers: { Authorization: `Bearer ${response.access_token}` },
                 }).then((res) => res.json());
 
-                const res = await googleLogin({
-                  email: userInfo.email,
-                  firstName: userInfo.given_name || (userInfo.name ? userInfo.name.split(' ')[0] : 'Indrani'),
-                  lastName: userInfo.family_name || 'Customer',
-                  googleId: userInfo.sub,
-                  profilePhoto: userInfo.picture || '',
-                });
+                if (userInfo.email) {
+                  const res = await googleLogin({
+                    email: userInfo.email,
+                    firstName: userInfo.given_name || (userInfo.name ? userInfo.name.split(' ')[0] : 'Indrani'),
+                    lastName: userInfo.family_name || 'Customer',
+                    googleId: userInfo.sub,
+                    profilePhoto: userInfo.picture || '',
+                  });
 
-                if (res.success) {
-                  if (res.user?.role === 'OWNER' || res.user?.role === 'ADMIN') {
-                    navigate('/admin');
+                  if (res.success) {
+                    if (res.user?.role === 'OWNER' || res.user?.role === 'ADMIN') {
+                      navigate('/admin');
+                    } else {
+                      navigate('/account');
+                    }
                   } else {
-                    navigate('/account');
+                    setError(res.message || 'Google sign-in failed.');
                   }
                 } else {
-                  setError(res.message || 'Google sign-in failed.');
+                  setError('Failed to retrieve user profile from Google.');
                 }
               } catch (e) {
                 setError('Failed to retrieve user profile from Google.');
@@ -116,12 +139,25 @@ export const Login = () => {
 
         tokenClient.requestAccessToken({ prompt: 'select_account' });
       } catch (err) {
-        setError('Google authentication client error. Please try again.');
+        setError('Error 401: invalid_client — The configured Google Client ID is invalid.');
+        setGoogleConfigModalOpen(true);
         setIsSubmitting(false);
       }
     } else {
       setError('Google Identity SDK is loading. Please check your connection and try again.');
       setIsSubmitting(false);
+    }
+  };
+
+  const handleSaveGoogleClientId = (e) => {
+    e.preventDefault();
+    const cleanId = inputClientId.trim();
+    if (cleanId) {
+      localStorage.setItem('indrani_google_client_id', cleanId);
+      setGoogleClientId(cleanId);
+      setGoogleConfigModalOpen(false);
+      setError('');
+      setTimeout(() => handleGoogleSignIn(), 300);
     }
   };
 
@@ -213,9 +249,20 @@ export const Login = () => {
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">
             {error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>{error}</span>
+              <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 space-y-2">
+                <div className="flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span className="font-bold">{error}</span>
+                </div>
+                {error.includes('invalid_client') && (
+                  <button
+                    type="button"
+                    onClick={() => setGoogleConfigModalOpen(true)}
+                    className="text-[11px] font-bold text-brand-maroon underline block"
+                  >
+                    Click here to configure your Google OAuth Client ID →
+                  </button>
+                )}
               </div>
             )}
 
@@ -349,6 +396,69 @@ export const Login = () => {
         </div>
 
       </div>
+
+      {/* GOOGLE OAUTH CONFIGURATION MODAL */}
+      {googleConfigModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-amber-200 text-xs">
+            <div className="flex justify-between items-center border-b pb-3">
+              <div className="flex items-center gap-2 text-brand-maroon font-serif font-bold text-base">
+                <Settings className="w-5 h-5 text-brand-gold" />
+                <span>Configure Google OAuth Client ID</span>
+              </div>
+              <button onClick={() => setGoogleConfigModalOpen(false)}><X className="w-5 h-5 text-gray-400" /></button>
+            </div>
+
+            <div className="space-y-3 text-gray-600 leading-relaxed">
+              <p className="text-amber-900 bg-amber-50 p-3 rounded-xl border border-amber-200 font-medium">
+                To enable Google OAuth login, enter your registered <strong>OAuth 2.0 Client ID</strong> from the Google Cloud Console.
+              </p>
+
+              <form onSubmit={handleSaveGoogleClientId} className="space-y-3 pt-1">
+                <div>
+                  <label className="block font-bold text-gray-800 uppercase tracking-wider mb-1">
+                    Google OAuth Client ID
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={inputClientId}
+                    onChange={(e) => setInputClientId(e.target.value)}
+                    placeholder="e.g. 123456789-abcdef.apps.googleusercontent.com"
+                    className="w-full p-3 border border-gray-300 rounded-xl text-xs font-mono focus:ring-2 focus:ring-brand-gold"
+                  />
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setGoogleConfigModalOpen(false)}
+                    className="flex-1 border py-2.5 rounded-xl font-bold text-gray-600"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 bg-brand-maroon text-brand-gold py-2.5 rounded-xl font-bold uppercase"
+                  >
+                    Save & Authenticate
+                  </button>
+                </div>
+              </form>
+
+              <div className="pt-3 border-t space-y-1 text-[11px]">
+                <span className="font-bold text-gray-800">Setup Instructions for Google Cloud Console:</span>
+                <ol className="list-decimal pl-4 space-y-1 text-gray-500">
+                  <li>Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer" className="text-brand-maroon underline inline-flex items-center gap-0.5">Google Cloud Console Credentials <ExternalLink className="w-3 h-3" /></a></li>
+                  <li>Click <strong>Create Credentials</strong> $\rightarrow$ <strong>OAuth client ID</strong> $\rightarrow$ Select <strong>Web application</strong></li>
+                  <li>Add Authorized JavaScript origins: <code className="bg-gray-100 px-1 font-mono">http://localhost:3000</code>, <code className="bg-gray-100 px-1 font-mono">https://indrani-paithani-web.onrender.com</code></li>
+                  <li>Copy your Client ID and paste it above!</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* FORGOT & RESET PASSWORD MODAL */}
       {forgotModalOpen && (
