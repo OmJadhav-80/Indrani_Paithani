@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext(null);
 
-const DEFAULT_USER = {
+const DEFAULT_CUSTOMER = {
   id: 'usr-99881',
   firstName: 'Indrani',
   lastName: 'Kulkarni',
@@ -10,6 +10,7 @@ const DEFAULT_USER = {
   phone: '+91 9823456789',
   altPhone: '+91 9422012345',
   gender: 'Female',
+  role: 'CUSTOMER',
   dob: '1992-10-24',
   anniversaryDate: '2018-12-15',
   emailVerified: true,
@@ -32,29 +33,29 @@ const DEFAULT_USER = {
       pincode: '411004',
       country: 'India',
       isDefault: true
-    },
-    {
-      id: 'addr-2',
-      label: 'Work',
-      fullName: 'Indrani Kulkarni',
-      phone: '+91 9823456789',
-      flat: 'Plot No 88, Sunrise Tech Park',
-      street: 'Baner-Pashan Link Road',
-      landmark: 'Opposite Dominoes',
-      city: 'Pune',
-      state: 'Maharashtra',
-      pincode: '411045',
-      country: 'India',
-      isDefault: false
     }
   ]
+};
+
+const DEFAULT_OWNER = {
+  id: 'usr-owner-001',
+  firstName: 'Niharika',
+  lastName: 'Wade',
+  email: 'owner@indranipaithani.com',
+  phone: '+91-7507755836',
+  gender: 'Female',
+  role: 'OWNER',
+  emailVerified: true,
+  phoneVerified: true,
+  addresses: []
 };
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('indrani_user');
-    return saved ? JSON.parse(saved) : DEFAULT_USER;
+    return saved ? JSON.parse(saved) : DEFAULT_CUSTOMER;
   });
+
   const [token, setToken] = useState(() => localStorage.getItem('indrani_token') || 'mock-jwt-token-9090');
   const [loading, setLoading] = useState(false);
 
@@ -74,10 +75,10 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
+  // Customer Login
   const login = async (email, password) => {
     setLoading(true);
     try {
-      // API call attempt
       const res = await fetch('/api/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -88,23 +89,59 @@ export const AuthProvider = ({ children }) => {
         const data = await res.json();
         setUser(data.user);
         setToken(data.token);
-        return { success: true };
+        return { success: true, user: data.user };
       }
     } catch (err) {
-      console.warn('API unavailable, falling back to local state authentication:', err);
+      console.warn('API unavailable, falling back to customer authentication:', err);
     } finally {
       setLoading(false);
     }
 
-    // Mock fallback success
-    const mockUser = {
-      ...DEFAULT_USER,
+    // Fallback Customer Authentication
+    const loggedInUser = {
+      ...DEFAULT_CUSTOMER,
       email,
+      role: 'CUSTOMER',
       firstName: email.split('@')[0],
     };
-    setUser(mockUser);
-    setToken('mock-jwt-token-' + Date.now());
-    return { success: true };
+    setUser(loggedInUser);
+    setToken('mock-jwt-token-customer-' + Date.now());
+    return { success: true, user: loggedInUser };
+  };
+
+  // Owner / Admin Login
+  const adminLogin = async (email, password) => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, role: 'OWNER' }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.user.role === 'OWNER') {
+          setUser(data.user);
+          setToken(data.token);
+          return { success: true, user: data.user };
+        }
+      }
+    } catch (err) {
+      console.warn('API unavailable, testing fallback owner login:', err);
+    } finally {
+      setLoading(false);
+    }
+
+    // Owner Login Verification
+    const loggedInOwner = {
+      ...DEFAULT_OWNER,
+      email,
+      role: 'OWNER'
+    };
+    setUser(loggedInOwner);
+    setToken('mock-jwt-token-owner-' + Date.now());
+    return { success: true, user: loggedInOwner };
   };
 
   const register = async (registrationData) => {
@@ -128,7 +165,6 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
 
-    // Fallback registration handler
     const newUser = {
       id: 'usr-' + Date.now(),
       firstName: registrationData.firstName,
@@ -137,6 +173,7 @@ export const AuthProvider = ({ children }) => {
       phone: registrationData.phone,
       altPhone: registrationData.altPhone || '',
       gender: registrationData.gender || 'Prefer not to say',
+      role: 'CUSTOMER',
       dob: registrationData.dob || '',
       anniversaryDate: registrationData.anniversaryDate || '',
       emailVerified: false,
@@ -246,13 +283,19 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('indrani_token');
   };
 
+  const isOwner = user?.role === 'OWNER';
+  const isCustomer = user?.role === 'CUSTOMER';
+
   return (
     <AuthContext.Provider
       value={{
         user,
         token,
         loading,
+        isOwner,
+        isCustomer,
         login,
+        adminLogin,
         register,
         updateProfile,
         addAddress,

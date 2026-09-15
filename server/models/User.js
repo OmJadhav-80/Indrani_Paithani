@@ -112,6 +112,11 @@ const UserSchema = new mongoose.Schema(
       minlength: [6, 'Password must be at least 6 characters long'],
       select: false, // Exclude password field by default on queries
     },
+    role: {
+      type: String,
+      enum: ['CUSTOMER', 'OWNER'],
+      default: 'CUSTOMER',
+    },
     emailVerified: {
       type: Boolean,
       default: false,
