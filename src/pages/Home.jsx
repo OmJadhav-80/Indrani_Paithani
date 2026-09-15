@@ -79,83 +79,98 @@ export const Home = () => {
       <SEO title="Authentic Handwoven Yeola Paithani Sarees" />
 
       {/* 3. HERO SECTION */}
-      <section className="relative bg-gradient-to-b from-brand-maroon via-brand-maroon-dark to-brand-maroon text-white overflow-hidden py-16 lg:py-24 border-b-4 border-brand-gold">
-        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-brand-gold/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-brand-purple/20 rounded-full blur-3xl pointer-events-none" />
+      <section className="relative min-h-[85vh] lg:min-h-[90vh] flex items-center bg-black overflow-hidden border-b-4 border-brand-gold">
+        {/* Full-width realistic Paithani saree background visual */}
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center md:bg-right-top transform scale-105 transition-transform duration-1000 opacity-90"
+          style={{ backgroundImage: `url('/hero-paithani-bg.jpg')` }}
+        />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        {/* Multi-layered dark luxury gradient overlay for maximum text contrast */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-r from-black/95 via-black/80 to-black/30 md:from-black/95 md:via-black/70 md:to-transparent" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/90 via-transparent to-black/60" />
+
+        {/* Ambient gold glow highlight in background */}
+        <div className="absolute top-1/3 left-10 w-96 h-96 bg-brand-gold/15 rounded-full blur-3xl pointer-events-none z-10" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 relative z-20 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
-            {/* Left Content */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 bg-brand-gold/20 border border-brand-gold/40 text-brand-gold px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest">
-                <Sparkles className="w-4 h-4 text-brand-gold" /> Authentic Yeola Handloom Heritage
+            {/* Left Content Column */}
+            <div className="lg:col-span-8 space-y-6 text-center lg:text-left">
+              {/* Brand Tagline Badge */}
+              <div className="inline-flex items-center gap-2.5 bg-brand-gold/20 border border-brand-gold/50 backdrop-blur-md text-brand-gold px-5 py-2 rounded-full text-xs font-bold uppercase tracking-[0.25em] shadow-lg">
+                <Sparkles className="w-4 h-4 text-brand-gold" />
+                <span>INDRANI PAITHANI</span>
               </div>
 
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight">
+              {/* Main Heading */}
+              <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.15] drop-shadow-md">
                 Timeless Paithani.<br />
-                <span className="text-brand-gold font-normal italic">Woven with Tradition.</span>
+                <span className="text-brand-gold font-normal italic drop-shadow">Woven with Tradition.</span>
               </h1>
 
-              <p className="text-sm sm:text-base text-amber-100/90 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                Discover the elegance of authentic handwoven Paithani sarees crafted with traditional artistry and timeless Indian heritage.
+              {/* Subtitle */}
+              <p className="text-sm sm:text-base lg:text-lg text-amber-100/90 leading-relaxed max-w-xl mx-auto lg:mx-0 font-light">
+                Discover authentic Paithani sarees inspired by the rich handloom heritage of Yeola, Maharashtra.
               </p>
 
+              {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
                 <Link
                   to="/shop"
-                  className="w-full sm:w-auto bg-brand-gold text-brand-maroon hover:bg-amber-300 px-8 py-4 rounded-xl font-serif font-bold text-sm uppercase tracking-wider shadow-gold-glow transition-all transform hover:scale-105 flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto bg-brand-gold text-brand-maroon hover:bg-amber-300 px-8 py-4 rounded-xl font-serif font-bold text-xs uppercase tracking-widest shadow-gold-glow transition-all transform hover:scale-105 flex items-center justify-center gap-2 group"
                 >
-                  Explore Collection <ArrowRight className="w-4 h-4 text-brand-maroon" />
+                  <span>EXPLORE COLLECTION</span>
+                  <ArrowRight className="w-4 h-4 text-brand-maroon group-hover:translate-x-1 transition-transform" />
                 </Link>
 
                 <Link
-                  to="/paithani-heritage"
-                  className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-brand-gold border border-brand-gold/40 px-6 py-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2"
+                  to="/shop?category=Yeola%20Paithani"
+                  className="w-full sm:w-auto bg-white/10 hover:bg-white/20 backdrop-blur-md text-brand-gold border border-brand-gold/60 px-8 py-4 rounded-xl font-serif font-bold text-xs uppercase tracking-widest transition-all hover:border-brand-gold flex items-center justify-center gap-2"
                 >
-                  Discover Our Heritage
+                  <span>SHOP PAITHANI</span>
                 </Link>
               </div>
+
+              {/* Trust Badges Strip */}
+              <div className="pt-6 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-[11px] text-amber-200/80 uppercase font-semibold tracking-wider">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-brand-gold" />
+                  <span>100% Silk Mark Certified</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Award className="w-4 h-4 text-brand-gold" />
+                  <span>24K Gold Zari Weave</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-brand-gold" />
+                  <span>Direct From Yeola Weavers</span>
+                </div>
+              </div>
+
             </div>
 
-            {/* Right Animated Floating Saree Graphic */}
-            <div className="lg:col-span-5 flex justify-center relative">
+            {/* Right Side Luxury Editorial Callout Pill */}
+            <div className="lg:col-span-4 hidden lg:flex justify-end relative">
               <motion.div
-                animate={{
-                  y: [0, -16, 0],
-                  rotate: [0, 1, 0, -1, 0]
-                }}
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="relative max-w-sm w-full"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="bg-black/60 backdrop-blur-xl border border-brand-gold/40 p-6 rounded-2xl max-w-xs shadow-2xl text-white space-y-3"
               >
-                <div className="relative rounded-2xl overflow-hidden border-4 border-brand-gold shadow-2xl bg-brand-maroon-dark">
-                  <img
-                    src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&q=80&w=1000"
-                    alt="Floating Royal Yeola Paithani Saree"
-                    className="w-full h-[450px] object-cover"
-                  />
-                  <div className="absolute bottom-4 left-4 right-4 bg-brand-maroon/90 backdrop-blur-md p-4 rounded-xl border border-brand-gold/60 text-white shadow-lg">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <span className="text-[10px] uppercase font-bold text-brand-gold tracking-widest">Masterpiece Collection</span>
-                        <h4 className="font-serif text-sm font-bold text-white">Maharani Royal Peacock Paithani</h4>
-                      </div>
-                      <span className="font-serif text-base font-bold text-brand-gold">₹38,500</span>
-                    </div>
-                  </div>
+                <div className="flex items-center gap-2 text-brand-gold text-xs font-bold uppercase tracking-wider">
+                  <Award className="w-4 h-4" />
+                  <span>Signature Royal Motif</span>
                 </div>
-
-                <motion.div
-                  animate={{ scale: [1, 1.08, 1] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                  className="absolute -top-4 -right-4 bg-brand-gold text-brand-maroon text-xs font-bold px-4 py-2 rounded-full shadow-lg border-2 border-white flex items-center gap-1.5"
-                >
-                  <Award className="w-4 h-4" /> Real Gold Zari Woven
-                </motion.div>
+                <h4 className="font-serif text-lg font-bold text-white">Pure Mulberry Silk & Peacock Mor Zari</h4>
+                <p className="text-xs text-amber-100/70 leading-relaxed">
+                  Hand-spun on traditional Yeola looms with pure metallic zari threads and authentic peacock tapestry pallus.
+                </p>
+                <div className="pt-2 border-t border-brand-gold/20 flex items-center justify-between text-xs">
+                  <span className="text-amber-200 font-serif italic">Artisan Masterpiece</span>
+                  <span className="font-bold text-brand-gold">64+ Yrs Heritage</span>
+                </div>
               </motion.div>
             </div>
 
