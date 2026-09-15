@@ -96,7 +96,7 @@ export const Navbar = () => {
 
             {/* Account Profile Link */}
             <Link
-              to={user ? '/profile' : '/register'}
+              to={user ? '/profile' : '/login'}
               className="flex items-center gap-2 text-gray-700 hover:text-brand-maroon transition-colors group"
               title={user ? `Logged in as ${user.firstName}` : 'Account Login'}
             >

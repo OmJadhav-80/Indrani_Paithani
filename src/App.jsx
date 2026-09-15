@@ -5,6 +5,8 @@ import { CartProvider } from './context/CartContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { CartDrawer } from './components/CartDrawer';
+import { Home } from './pages/Home';
+import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Profile } from './pages/Profile';
 import { Catalog } from './pages/Catalog';
@@ -19,8 +21,9 @@ export const App = () => {
             <Navbar />
             <main className="flex-1">
               <Routes>
-                <Route path="/" element={<Catalog />} />
+                <Route path="/" element={<Home />} />
                 <Route path="/catalog" element={<Catalog />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/checkout" element={<Checkout />} />
