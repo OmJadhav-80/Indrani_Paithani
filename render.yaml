@@ -20,7 +20,7 @@ services:
         value: https://indrani-paithani-web.onrender.com
 
   # 2. React Vite Static Frontend Web Service
-  - type: static
+  - type: web
     name: indrani-paithani-web
     env: static
     region: singapore
