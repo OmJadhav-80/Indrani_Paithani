@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 // Address Subdocument Schema
 const AddressSchema = new mongoose.Schema(
   {
-    label: {
+    addressType: {
       type: String,
       enum: ['Home', 'Work', 'Other'],
       default: 'Home',
@@ -21,12 +21,12 @@ const AddressSchema = new mongoose.Schema(
     },
     flat: {
       type: String,
-      required: [true, 'Flat / House No. is required'],
+      required: [true, 'Address Line 1 (Flat/House No) is required'],
       trim: true,
     },
     street: {
       type: String,
-      required: [true, 'Street / Area name is required'],
+      required: [true, 'Address Line 2 (Street/Area) is required'],
       trim: true,
     },
     landmark: {
@@ -46,8 +46,8 @@ const AddressSchema = new mongoose.Schema(
     },
     pincode: {
       type: String,
-      required: [true, 'Pincode is required'],
-      match: [/^\d{6}$/, 'Please enter a valid 6-digit Indian pincode'],
+      required: [true, 'PIN code is required'],
+      match: [/^\d{6}$/, 'Please enter a valid 6-digit PIN code'],
     },
     country: {
       type: String,
@@ -84,56 +84,51 @@ const UserSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: [true, 'Mobile phone is required'],
-      unique: true,
-      trim: true,
-    },
-    altPhone: {
-      type: String,
       trim: true,
       default: '',
     },
-    gender: {
+    profilePhoto: {
       type: String,
-      enum: ['Female', 'Male', 'Other', 'Prefer not to say'],
-      default: 'Female',
+      default: '',
     },
-    dob: {
-      type: Date,
-      default: null,
+    authProvider: {
+      type: String,
+      enum: ['email', 'google'],
+      default: 'email',
     },
-    anniversaryDate: {
-      type: Date,
-      default: null,
+    googleId: {
+      type: String,
+      default: '',
     },
     password: {
       type: String,
-      required: [true, 'Password is required'],
-      minlength: [6, 'Password must be at least 6 characters long'],
       select: false, // Exclude password field by default on queries
     },
     role: {
       type: String,
-      enum: ['CUSTOMER', 'OWNER'],
+      enum: ['CUSTOMER', 'OWNER', 'ADMIN'],
       default: 'CUSTOMER',
+    },
+    accountStatus: {
+      type: String,
+      enum: ['Active', 'Suspended', 'Pending'],
+      default: 'Active',
+    },
+    lastLoginAt: {
+      type: Date,
+      default: Date.now,
+    },
+    resetPasswordToken: {
+      type: String,
+      select: false,
+    },
+    resetPasswordExpires: {
+      type: Date,
+      select: false,
     },
     emailVerified: {
       type: Boolean,
       default: false,
-    },
-    phoneVerified: {
-      type: Boolean,
-      default: true,
-    },
-    preferences: {
-      whatsappUpdates: {
-        type: Boolean,
-        default: true,
-      },
-      promotionalOffers: {
-        type: Boolean,
-        default: true,
-      },
     },
     addresses: [AddressSchema],
     wishlist: [
@@ -145,12 +140,19 @@ const UserSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 
+// Virtual property for Full Name
+UserSchema.virtual('fullName').get(function () {
+  return `${this.firstName} ${this.lastName}`.trim();
+});
+
 // Pre-save Middleware: Hash Password before saving if modified
 UserSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password') || !this.password) return next();
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
@@ -162,6 +164,7 @@ UserSchema.pre('save', async function (next) {
 
 // Instance Method: Compare input password with stored hashed password
 UserSchema.methods.comparePassword = async function (candidatePassword) {
+  if (!this.password) return false;
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
