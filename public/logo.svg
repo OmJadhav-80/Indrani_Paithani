@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F4E091" />
+      <stop offset="50%" stop-color="#D4AF37" />
+      <stop offset="100%" stop-color="#AA8417" />
+    </linearGradient>
+    <linearGradient id="maroonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4A0E17" />
+      <stop offset="100%" stop-color="#240509" />
+    </linearGradient>
+  </defs>
+  <!-- Background Shield -->
+  <rect width="240" height="240" rx="40" fill="url(#maroonGrad)" />
+  <rect x="10" y="10" width="220" height="220" rx="32" fill="none" stroke="url(#goldGrad)" stroke-width="2" opacity="0.6" />
+  
+  <!-- Peacock / Zari Motif Symbol -->
+  <path d="M120 40 C145 70, 185 85, 185 125 C185 165, 155 195, 120 195 C85 195, 55 165, 55 125 C55 85, 95 70, 120 40 Z" fill="none" stroke="url(#goldGrad)" stroke-width="4" />
+  <circle cx="120" cy="120" r="35" fill="none" stroke="url(#goldGrad)" stroke-width="3" stroke-dasharray="4 2" />
+  <circle cx="120" cy="120" r="15" fill="url(#goldGrad)" />
+  
+  <!-- Crown Zari Top accent -->
+  <path d="M100 52 L120 32 L140 52 Z" fill="url(#goldGrad)" />
+</svg>

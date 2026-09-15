@@ -1,0 +1,35 @@
+services:
+  # 1. Express REST API Web Service
+  - type: web
+    name: indrani-paithani-api
+    env: node
+    region: singapore
+    plan: starter
+    buildCommand: cd server && npm install
+    startCommand: cd server && node index.js
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CLIENT_URL
+        value: https://indrani-paithani-web.onrender.com
+
+  # 2. React Vite Static Frontend Web Service
+  - type: static
+    name: indrani-paithani-web
+    env: static
+    region: singapore
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://indrani-paithani-api.onrender.com
