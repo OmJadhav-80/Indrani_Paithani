@@ -16,28 +16,14 @@ export const Navbar = () => {
     { name: 'Home', path: '/' },
     { name: 'Shop', path: '/shop' },
     { name: 'Collections', path: '/collections' },
+    { name: 'Our Craftsmanship', path: '/our-craftsmanship' },
+    { name: 'Paithani Heritage', path: '/paithani-heritage' },
     { name: 'About Us', path: '/about' },
-    { name: 'Paithani Heritage', path: '/heritage' },
     { name: 'Contact', path: '/contact' }
   ];
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-amber-200/50 shadow-xs">
-      {/* Top Banner Announcement */}
-      <div className="bg-brand-maroon text-brand-gold text-xs py-2 px-4 text-center font-medium flex items-center justify-between">
-        <div className="hidden sm:flex items-center gap-2">
-          <ShieldCheck className="w-3.5 h-3.5 text-brand-gold" />
-          <span>100% Authentic Silk Mark Certified</span>
-        </div>
-        <p className="flex-1 text-center">
-          ✨ Festive Offer: <span className="font-semibold text-white">Complimentary Express Shipping Across India</span> on orders above ₹10,000
-        </p>
-        <div className="hidden md:flex items-center gap-2 text-white/80 hover:text-white">
-          <Phone className="w-3 h-3 text-brand-gold" />
-          <span>Help: {SITE_CONFIG.supportPhone}</span>
-        </div>
-      </div>
-
       {/* Main Navbar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
@@ -69,7 +55,7 @@ export const Navbar = () => {
           </Link>
 
           {/* Navigation Links - Desktop */}
-          <nav className="hidden lg:flex items-center gap-7">
+          <nav className="hidden lg:flex items-center gap-6">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path;
               return (
@@ -87,7 +73,7 @@ export const Navbar = () => {
           </nav>
 
           {/* Action Icons (Search, Wishlist, Account, Shopping Bag, Shop Now CTA) */}
-          <div className="flex items-center gap-3 sm:gap-5">
+          <div className="flex items-center gap-3 sm:gap-4">
             
             {/* Search Icon Trigger */}
             <button

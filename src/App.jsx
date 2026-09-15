@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { ToastProvider } from './components/Toast';
 
+import { AnnouncementBar } from './components/AnnouncementBar';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { CartDrawer } from './components/CartDrawer';
@@ -14,6 +15,7 @@ import { Collections } from './pages/Collections';
 import { ProductPage } from './pages/ProductPage';
 import { About } from './pages/About';
 import { PaithaniHeritage } from './pages/PaithaniHeritage';
+import { Craftsmanship } from './pages/Craftsmanship';
 import { Contact } from './pages/Contact';
 import { Location } from './pages/Location';
 import { Login } from './pages/Login';
@@ -33,6 +35,7 @@ export const App = () => {
         <ToastProvider>
           <Router>
             <div className="flex flex-col min-h-screen font-sans bg-brand-cream text-brand-dark antialiased selection:bg-brand-gold selection:text-brand-maroon">
+              <AnnouncementBar />
               <Navbar />
               <main className="flex-1">
                 <Routes>
@@ -44,14 +47,26 @@ export const App = () => {
                   <Route path="/product/:slug" element={<ProductPage />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/paithani-heritage" element={<PaithaniHeritage />} />
+                  <Route path="/heritage" element={<PaithaniHeritage />} />
+                  <Route path="/our-craftsmanship" element={<Craftsmanship />} />
+                  <Route path="/craftsmanship" element={<Craftsmanship />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/location" element={<Location />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
+                  <Route path="/forgot-password" element={<Login />} />
                   <Route path="/cart" element={<Shop />} />
                   <Route path="/checkout" element={<Checkout />} />
                   <Route path="/wishlist" element={<CustomerDashboard />} />
+                  
+                  {/* Policy and Customer Care Direct Routes */}
                   <Route path="/policies" element={<Policies />} />
+                  <Route path="/faq" element={<Policies />} />
+                  <Route path="/shipping-policy" element={<Policies />} />
+                  <Route path="/refund-policy" element={<Policies />} />
+                  <Route path="/privacy-policy" element={<Policies />} />
+                  <Route path="/terms-and-conditions" element={<Policies />} />
+                  <Route path="/track-order" element={<CustomerDashboard />} />
 
                   {/* Protected Customer Portal Routes */}
                   <Route path="/account" element={<CustomerDashboard />} />
